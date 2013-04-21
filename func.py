@@ -8,8 +8,8 @@ import threading
 
 #email settings
 HOST     = "smtp.gmail.com"
-USER     = "kymowind@gmail.com"
-PSWD     = "googlekymowind"
+USER     = ""
+PSWD     = ""
 FROM     = USER
 POSTFIX  = "gmail.com" 
 class SendEmailThread(threading.Thread):
