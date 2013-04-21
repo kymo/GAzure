@@ -97,21 +97,24 @@ class DBModel():
             print e.reason_collection_not_exist()
         else:
             new_cols = insert_cols
+            #print insert_cols
             is_already_in = self.find_collection(cols_name, insert_cols)
             if is_already_in:
-                print 'the collection has been inserte into the database'
+                print 'the collection has been inserted into the database'
                 return
             try:
                 if self.dict_structure_similar(COLLECTION_NAME[cols_name], new_cols):
                     collection = self.database[cols_name]
                     try:
-                        collection.insert(insert_cols)
+                        ret = collection.insert(insert_cols)
+                        return ret
                     except Exception, e:
-                        print e.reason()
+                        print e
                 else:
                     raise InsertException(cols_name)
             except InsertException, e:
                 print e.reason_collection_structure_unsimilar()
+            return None
 
     def dict_structure_similar(self, dict_r, dict_t):
         """ just whether the dict_r has the same structure as dict_t has
@@ -135,9 +138,6 @@ class DBModel():
             for item in first_keys:
                 if type(dict_r[item]) != type(dict_t[item]):
                     return False
-                elif isinstance(dict_r[item], dict):
-                    if not self.dict_structure_similar(dict_r[item], dict_r[item]):
-                        return False
             return True
         else:
             return False
@@ -161,11 +161,8 @@ class DBModel():
             Raise:
                 None
         """
-        print target_raw
-        print update_values
         for key_update in update_values.keys():
             found = False
-            
             for key_raw in target_raw.keys():
                 if key_update == key_raw:
                     found = True
@@ -173,8 +170,6 @@ class DBModel():
             if found:
                 up_values = update_values[key_update]
                 up_values = u"".join(up_values) if isinstance(up_values, str) else update_values[key_update]
-                print type(up_values),'.'
-                print type(target_raw[key_raw])
                 if type(up_values) != type(target_raw[key_raw]):
                     return None
                 elif isinstance(up_values, dict):
@@ -185,8 +180,18 @@ class DBModel():
                         target_raw[key_raw] = update_ans
                 else:
                     target_raw[key_raw] = up_values
+            else:
+                target_raw[key_update] = update_values[key_update]
         return target_raw
+    def auto_dereference(self, ObjectId):
+        """ auto de reference """
+        return self.database.dereference(ObjectId)
 
+    def get_count(self, cols_name):
+        """ get the number of the database """
+        return self.database[cols_name].find().count()
+
+    
     def update_collection(self, cols_name, update_condition, update_value):
         """ update the collection
 
@@ -219,9 +224,8 @@ class DBModel():
             else:
                 for item in find_raws:
                     update_ans = self.update_dict_values(item, update_value)
-                    print update_ans
                     if update_ans:
-                        self.database[cols_name].update(update_condition, update_ans)
+                        st = self.database[cols_name].update(update_condition , update_ans)
                 pass  
         pass
 
@@ -250,7 +254,12 @@ class DBModel():
                     if sort_c:
                         return [item for item in self.database[cols_name].find(find_condition).sort(sort_c)]
                     else:
-                        return [item for item in self.database[cols_name].find(find_condition)]
+                        outcome = self.database[cols_name].find(find_condition)
+                        if outcome:
+                            t = [item for item in outcome]
+                            return t
+                        else:
+                            return []
                 else:
                     return self.database[cols_name].find_one()
             else:
@@ -261,7 +270,8 @@ class DBModel():
         except Exception, e:
             print 'Error when search the collection %s !'%cols_name
             
-    def delete_collection(self, cols_name, delete_cols):
+    def remove_collection(self, cols_name, delete_cols):
+        self.database[cols_name].remove(delete_cols)
         pass
 
 

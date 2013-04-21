@@ -21,32 +21,99 @@ another one,please make keys of that document just like 'link_*',and the value o
 course, must be the document's name
 '''
 COLLECTION_NAME = {
-    u'user':
+    'user':
         {
-        u'name':'',
-        u'email':'',
-        u'profile':None,
-        u'password':'',
-        #more added here
-        u'type':0,
-        u'mission' : [],
+            'id': 0,
+            'name':'',
+            'email':'',
+            'profile':[],
+            'password':'',
+            #more added here
+            'interest' : [],
+            'type':0,
+            'mission' : [],
         },
-    u'mission':
+    'mission':
         {
-        u'owner_id':'',
-        u'title':'',
-        u'introduction':'',
-        u'type': 0,
-        u'code' : '',
-        u'style' : '',
-        u'public' : 0
+            'owner_id':'',
+            'id':0,
+            'title':'',
+            'introduction':'',
+            'type': 0,
+            'code' : '',
+            'style' : '',
+            'public' : 0,
+            'comment' : [],
         },
-    u'information':
+    
+    'compile_infor':
         {
-        u'sender':None,
-        u'content': None,
-        u'comments':None,
+            'id' : 0,
+            'mission_id': 0,
+            'compile_content' : '',
+            'time' : '',
+            'success' : 0,
         },
+    'running_infor':
+        {
+            'id' : 0,
+            'running_information' : {},
+            'tag': [],
+            'mission_id' : 0,
+            'time' : '',
+            'success' : 0,
+        },
+    'comment':
+        {
+            'sender_id' : '',
+            'receiver_id' : '',
+            'content' : '',
+            'type' : 0,
+            'style' : 0,
+            'mission_id' : 0,
+            'owner_id' : '',
+            'id' : 0,
+            'time' : '',
+        },
+    'tag':
+        {
+            'key' : '',
+            'interest' : 0,
+            'mission_type' : 0
+        },
+    'index':
+        {
+            'key': '',
+            'mission' : [],
+            'bit' : {},
+            'position' : {}
+        },
+    'profile':
+        {
+            'name' : '',
+            'email' : '',
+            'department' : '',
+            'mobile' : '',
+            'id' : 0
+        },
+
+    'information':
+        {
+            'sender_id': 0,
+            'receiver_id' : 0,
+            'content': '',
+            'time': '',
+            'style' : 0,
+            'type': 0,
+            'id' : 0,
+
+        },
+    #ids
+    'ids':
+        {
+            'name' : '',
+            'ids' : 0,
+        }
     #you can add as many as what you need here
     }
 
