@@ -7,9 +7,11 @@ a platform for gpu computing(based on bottle and mongodb)
 Attentions:
 --------------------------------------------------------
 1 start application server first by python com_server.py
+ 
 2 then start web application by python g_azure.py
+ 
 3 attention: all the commands are just used for debugging.
-
+ 
 Statement:
 ------------------------------------------------------------
 
@@ -24,10 +26,12 @@ and save the compile information or the running information into collection(tabl
 
 ### g_azure.py
 the main framework of the project. It contains more reasonable url mapping method.
-in it, you can find the process of build a index database, and the process of search a key word 
-in a file collection.
-also, you can find the method to use monkey(a plugin written for projects with mongo).
-and of cousrse, how to comunicate with a application server will be found in it too.
+ 
+ in it, you can find the process of build a index database, and the process of search a key word 
+  
+  in a file collection.
+ also, you can find the method to use monkey(a plugin written for projects with mongo).
+ and of cousrse, how to comunicate with a application server will be found in it too.
 
 ### func.py
 contain a thread class for sending email and change search content to html file(for emphasize)
