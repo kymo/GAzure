@@ -16,7 +16,7 @@ from monkey import DBModel
 
 #constant arguments
 host = "127.0.0.1"
-port = 27800
+port = 28811
 ADDR = (host, port)
 BUFFER_SIZE = 1024
 LISTEN_NUMBER = 10
@@ -46,6 +46,9 @@ class Queue():
         self.front = 0
         self.rear = 0
 
+    def get_length(self):
+        return (self.rear + QUEUE_SIZE - self.front + 1) % QUEUE_SIZE
+    
     def push(self, mission):
         """ push a element into a queue
         
@@ -294,9 +297,39 @@ class RunningThread(threading.Thread):
             self.db.insert_collection('ids', {'name' : 'compile_infor', 'ids' : 1})
         else:
             self.db.update_collection('ids', {'name' : 'compile_infor'}, {'ids' : index})
+#update thread 
+class UpdateThread(threading.Thread):
+    
+    def __init__(self, compile_queue, running_queue, ip):
+        threading.Thread.__init__(self)
+        self.compile_queue = compile_queue
+        self.running_queue = running_queue
+        self.ip = ip
+
+    def run(self):
+        """ update thread
+        send gpu source to dispatch server every 5 seconds
+        """
+        while True:
+            print 'begin to send gpu information'
+            time.sleep(5);
+            ADDRS = ("127.0.0.1", 27811)
+            server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            server_sock.connect(ADDRS)
+            print 'connect ok'
+            compiling_number = self.compile_queue.get_length()
+            running_number = self.running_queue.get_length()
+            gpu = 10 - compiling_number - running_number
+            send_dict = {str(self.ip) : {'gpu' : gpu, 'compiling' : compiling_number, 'running_number' : running_number}}
+            import simplejson
+            json = simplejson.dumps(send_dict)
+            server_sock.send(json)
+            print json
+            server_sock.close()
+        pass
 
 #main server constructe
-class AzureServer():  
+class ComputingServer():  
     def __init__(self):
         #init compile queue and running queue
         self.compile_queue = Queue()
@@ -304,9 +337,11 @@ class AzureServer():
         #link database
         self.db = DBModel('g_azure')
         self.db.link_database()
+        self.ip = "127.0.0.1"
         #init compile thread and running  thread
         self.compile_thread = CompileThread(self.compile_queue, self.running_queue, self.db)
         self.running_thread = RunningThread(self.running_queue, self.db)
+        self.update_thread = UpdateThread(self.compile_queue, self.running_queue, self.ip)
         self.server = None
     
     def server_start(self):
@@ -330,9 +365,10 @@ class AzureServer():
         """
         self.running_thread.start()
         self.compile_thread.start()
+        self.update_thread.start()
         self.server_start()
 
 
 if __name__ == '__main__':
-    azure_server = AzureServer()
+    azure_server = ComputingServer()
     azure_server.run()
