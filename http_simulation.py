@@ -35,7 +35,7 @@ def feedback(first, second):
 dic = {
     'title' : '机器学习的应用算法',
     'introduction' : '这个算法不错哦，真的不错哦',
-    'files' : open('vectorAdd.cu', 'rb'),
+    'files' : open('pso.cu', 'rb'),
     'file_type' : 'c',
     'style' : '机器学习',
     'is_public' : 'checked',
