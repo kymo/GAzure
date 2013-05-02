@@ -19,6 +19,11 @@ Statement:
 
 Introduction:
 ------------------------------------------------------------
+### com_dispatch.py
+
+ define the lightweightedserver engine for disptach server
+   
+     
 ### com_server.py 
 
   defined the lightweighted server engine to compile c/c++/cuda files and run them.
